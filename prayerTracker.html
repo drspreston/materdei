@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mater Dei • 20-Min Daily Sanctuary</title>
+  <meta name="description" content="A 20-Minute Daily Contemplative Prayer Sanctuary & 30-Day Devotional Companion.">
+  <meta name="theme-color" content="#3C1361">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mater Dei">
+  
+  <!-- Embedded PWA Manifest via Data URI -->
+  <link rel="manifest" href="data:application/manifest+json;base64," id="manifest-link">
+  
+  <style>
+    :root {
+      --bg: #FAF9F6;
+      --card-bg: #FFFFFF;
+      --primary: #3C1361;
+      --primary-light: #5A2688;
+      --accent: #B78628;
+      --accent-light: #DFB257;
+      --border: #E5DEC9;
+      --border-dark: #D8CFBC;
+      --text: #2B262D;
+      --muted: #7A7265;
+      --nav-bg: #F3EFE6;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Georgia", serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(var(--safe-bottom) + 70px);
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, .serif {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-weight: 600;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(180deg, rgba(60, 19, 97, 0.04) 0%, rgba(250, 249, 246, 0) 100%);
+      padding: 16px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-title {
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .brand-subtitle {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--nav-bg);
+      padding: 4px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .streak-badge svg {
+      width: 13px;
+      height: 13px;
+      fill: var(--accent);
+    }
+
+    /* MAIN CONTAINER & VIEWS */
+    main {
+      flex: 1;
+      padding: 16px 16px 24px;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    .view-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* VIEW 1: TODAY'S DEVOTIONAL PRAYER CARD */
+    .card-scene {
+      perspective: 1000px;
+      margin-bottom: 20px;
+    }
+    .prayer-card {
+      width: 100%;
+      min-height: 380px;
+      position: relative;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .prayer-card.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 380px;
+      backface-visibility: hidden;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 4px 20px rgba(60, 19, 97, 0.06);
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card-face-back {
+      transform: rotateY(180deg);
+      background: #FAF8F2;
+    }
+
+    /* Card Frame Accents */
+    .card-inner-border {
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 18px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .corner-diamond {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      transform: rotate(45deg);
+    }
+    .tl { top: -4px; left: -4px; }
+    .tr { top: -4px; right: -4px; }
+    .bl { bottom: -4px; left: -4px; }
+    .br { bottom: -4px; right: -4px; }
+
+    .card-header-bar {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .day-pill {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .scripture-quote {
+      font-family: "Georgia", serif;
+      font-style: italic;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      text-align: center;
+      margin: 16px 0;
+    }
+    .scripture-citation {
+      text-align: center;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .card-hint {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Back of Card */
+    .prompt-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .prompt-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    /* 20-MINUTE TIMER COMPONENT */
+    .timer-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+      text-align: center;
+    }
+    .timer-phase-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: var(--primary);
+      background: var(--nav-bg);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+    }
+    .circular-timer-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 16px;
+    }
+    .timer-svg {
+      transform: rotate(-90deg);
+      width: 200px;
+      height: 200px;
+    }
+    .timer-circle-bg {
+      fill: none;
+      stroke: var(--nav-bg);
+      stroke-width: 8;
+    }
+    .timer-circle-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 565.48;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.8s linear, stroke 0.5s ease;
+    }
+    .timer-time-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .time-digits {
+      font-size: 38px;
+      font-weight: 300;
+      color: var(--primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: 1px;
+    }
+    .time-phase-label {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: -2px;
+    }
+
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .btn-timer {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(60, 19, 97, 0.2);
+      transition: transform 0.1s ease, background-color 0.2s;
+    }
+    .btn-timer:active {
+      transform: scale(0.96);
+    }
+    .btn-timer.btn-reset {
+      background: var(--nav-bg);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+    .phase-timeline {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .phase-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .phase-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      margin-bottom: 4px;
+      transition: background 0.3s;
+    }
+    .phase-step.active .phase-dot {
+      background: var(--primary);
+      transform: scale(1.3);
+    }
+    .phase-step.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* DAILY REFLECTION & HABIT CHECKS */
+    .prayer-actions-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .habit-toggles {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .habit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .habit-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+    .habit-item.checked .habit-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .habit-item.checked .habit-checkbox::after {
+      content: "✓";
+      color: #FFF;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .grace-textarea {
+      width: 100%;
+      height: 90px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+      resize: none;
+      user-select: text;
+    }
+    .grace-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: #FFFFFF;
+    }
+
+    /* VIEW 2: 30-DAY GRID MATRIX */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .day-cell {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s, border-color 0.2s;
+    }
+    .day-cell:active {
+      transform: scale(0.95);
+    }
+    .day-cell.current {
+      border: 2px solid var(--primary);
+    }
+    .day-cell.completed {
+      background: #F4EFE6;
+      border-color: var(--accent);
+    }
+    .day-cell-num {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .day-cell-status {
+      font-size: 10px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* VIEW 3: JOURNAL NOTES & TESTIMONIES */
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .note-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .note-card-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .note-card-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    /* BOTTOM PERSISTENT NAVIGATION BAR */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--safe-bottom) + 64px);
+      padding-bottom: var(--safe-bottom);
+      background: var(--nav-bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      padding: 8px 16px;
+      transition: color 0.2s;
+    }
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .nav-btn.active {
+      color: var(--primary);
+    }
+    .nav-btn.active svg {
+      fill: var(--primary);
+    }
+
+    /* NOTIFICATION TOAST */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--safe-bottom) + 75px);
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--primary);
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 200;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+<!-- ACCESS CODE GATE OVERLAY -->
+<div id="accessGate" style="
+  position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; text-align: center;
+">
+  <div style="
+    background: var(--card-bg); border: 1px solid var(--border-dark);
+    border-radius: 16px; padding: 32px 24px; max-width: 380px; width: 100%;
+    box-shadow: 0 8px 30px rgba(60, 19, 97, 0.08);
+  ">
+    <!-- Marian Monogram -->
+    <div style="
+      width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--accent);
+      margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+      color: var(--accent); font-family: serif; font-size: 20px; font-weight: bold;
+    ">☩</div>
+
+    <h2 class="serif" style="color: var(--primary); font-size: 20px; margin-bottom: 6px;">
+      Devotional Access
+    </h2>
+    <p style="font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 20px;">
+      Please enter the personal Access Code provided on Page 1 of your <em>Mater Dei Welcome Guide</em>.
+    </p>
+
+    <input type="text" id="passcodeInput" placeholder="ENTER ACCESS CODE" style="
+      width: 100%; padding: 12px 14px; text-align: center; font-size: 14px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: bold;
+      border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 14px;
+      color: var(--primary); background: var(--bg); outline: none;
+    ">
+
+    <button onclick="verifyAccessCode()" style="
+      width: 100%; padding: 12px; background: var(--primary); color: #FFF;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: bold;
+      letter-spacing: 1px; cursor: pointer;
+    ">
+      UNLOCK SANCTUARY →
+    </button>
+
+    <div id="gateError" style="
+      color: #B22222; font-size: 11px; margin-top: 12px; display: none;
+    ">
+      Invalid code. Please check your Welcome PDF guide.
+    </div>
+  </div>
+
+  <div style="font-size: 10px; color: var(--muted); margin-top: 24px;">
+    © 2026 Mater Dei Creative • Personal Devotional License
+  </div>
+</div>
+
+  <!-- HEADER -->
+  <header>
+    <div>
+      <div class="brand-title">Mater Dei</div>
+      <div class="brand-subtitle">20-Minute Daily Sanctuary</div>
+    </div>
+    <div class="streak-badge" id="streakBadge" title="Consecutive days completed">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+      <span id="streakCount">0</span> Days
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main>
+    
+    <!-- VIEW 1: TODAY'S DEVOTIONAL & 20-MIN PRAYER TIME -->
+    <section id="view-today" class="view-section active">
+      
+      <!-- DAILY FLIPPABLE DEVOTIONAL CARD -->
+      <div class="card-scene" onclick="flipCard()">
+        <div class="prayer-card" id="prayerCard">
+          
+          <!-- FRONT: SCRIPTURE CONTEMPLATION -->
+          <div class="card-face card-face-front">
+            <div class="card-inner-border">
+              <div class="corner-diamond tl"></div><div class="corner-diamond tr"></div>
+              <div class="corner-diamond bl"></div><div class="corner-diamond br"></div>
+              
+              <div class="card-header-bar">
+                <span class="day-pill" id="cardDayPill">DAY 01 OF 30</span>
+                <h3 class="serif" style="color: var(--primary); font-size: 16px;">Daily Scripture</h3>
+              </div>
+
+              <div class="scripture-quote" id="cardScripture">
+                "Trust in the Lord with all thine heart; and lean not unto thine own understanding."
+              </div>
+
+              <div>
+                <div class="scripture-citation" id="cardCitation">PROVERBS 3:5-6</div>
+                <div class="card-hint">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/></svg>
+                  Tap card to reveal Meditatio Prompt
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BACK: MEDITATIO PROMPT -->
+          <div class="card-face card-face-back">
+            <div class="card-inner-border">
+              <div class="corner-diamond tl"></div><div class="corner-diamond tr"></div>
+              <div class="corner-diamond bl"></div><div class="corner-diamond br"></div>
+              
+              <div>
+                <div class="card-header-bar">
+                  <span class="day-pill">CONTEMPLATIVE REFLECTION</span>
+                  <div class="prompt-label">Meditatio Prompt</div>
+                </div>
+                <div class="prompt-text serif" id="cardPrompt">
+                  Where in your daily routine are you being invited to surrender control and let God direct your footsteps?
+                </div>
+              </div>
+
+              <div>
+                <div class="card-hint">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/></svg>
+                  Tap to return to Scripture
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 20-MINUTE SACRED TIMER -->
+      <div class="timer-section">
+        <div class="timer-phase-pill" id="phasePill">Phase 1: Lectio (Scripture)</div>
+        
+        <div class="circular-timer-container">
+          <svg class="timer-svg" viewBox="0 0 200 200">
+            <circle class="timer-circle-bg" cx="100" cy="100" r="90"></circle>
+            <circle class="timer-circle-progress" id="timerProgress" cx="100" cy="100" r="90"></circle>
+          </svg>
+          <div class="timer-time-display">
+            <div class="time-digits" id="timeDisplay">20:00</div>
+            <div class="time-phase-label" id="phaseSub">Lectio Divina</div>
+          </div>
+        </div>
+
+        <div class="timer-controls">
+          <button class="btn-timer" id="startBtn" onclick="toggleTimer()">
+            <svg id="playIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span id="startBtnText">Begin Prayer</span>
+          </button>
+          <button class="btn-timer btn-reset" onclick="resetTimer()">Reset</button>
+        </div>
+
+        <!-- 3 Movement Timeline -->
+        <div class="phase-timeline">
+          <div class="phase-step active" id="step1">
+            <div class="phase-dot"></div>
+            <span>0–5m Lectio</span>
+          </div>
+          <div class="phase-step" id="step2">
+            <div class="phase-dot"></div>
+            <span>5–15m Quiet</span>
+          </div>
+          <div class="phase-step" id="step3">
+            <div class="phase-dot"></div>
+            <span>15–20m Oratio</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEVOTIONAL HABITS & GRACE NOTE -->
+      <div class="prayer-actions-box">
+        <div class="section-title">
+          <span>Daily Devotional Check</span>
+          <span style="font-size: 10px; color: var(--accent);" id="todayDateStr"></span>
+        </div>
+
+        <div class="habit-toggles">
+          <div class="habit-item" id="chkMorn" onclick="toggleHabit('morn')">
+            <div class="habit-checkbox"></div>
+            <span>Morning Offering & Surrender</span>
+          </div>
+          <div class="habit-item" id="chkPrayer" onclick="toggleHabit('prayer')">
+            <div class="habit-checkbox"></div>
+            <span>20-Minute Meditation Completed</span>
+          </div>
+          <div class="habit-item" id="chkEve" onclick="toggleHabit('eve')">
+            <div class="habit-checkbox"></div>
+            <span>Evening Examen & Thanksgiving</span>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">
+          <span>Grace / Contemplative Note</span>
+        </div>
+        <textarea class="grace-textarea" id="graceNoteInput" placeholder="Record what the Lord spoke to your heart during prayer..." oninput="saveDailyNote()"></textarea>
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: 30-DAY PROGRESS TRACKER -->
+    <section id="view-tracker" class="view-section">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <h2 class="serif" style="color: var(--primary); font-size: 18px;">30-Day Sanctuary Journey</h2>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">Tap any day to enter that day's meditation</p>
+      </div>
+      
+      <div class="grid-container" id="daysGrid">
+        <!-- 30 Days dynamically generated -->
+      </div>
+    </section>
+
+    <!-- VIEW 3: JOURNAL REFLECTIONS & TESTIMONIES -->
+    <section id="view-notes" class="view-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h2 class="serif" style="color: var(--primary); font-size: 18px;">Prayer Journal Notes</h2>
+        <button class="btn-timer btn-reset" style="padding: 6px 12px; font-size: 11px;" onclick="exportJournal()">Export</button>
+      </div>
+      <div class="notes-list" id="notesList">
+        <!-- Rendered saved notes -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: ABOUT / 20-MIN METHOD GUIDE -->
+    <section id="view-guide" class="view-section">
+      <div style="text-align: center; margin-bottom: 18px;">
+        <h2 class="serif" style="color: var(--primary); font-size: 18px;">The 20-Minute Method</h2>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">Three movements of Catholic contemplative prayer</p>
+      </div>
+
+      <div class="note-card" style="margin-bottom: 12px;">
+        <div class="note-card-header">
+          <span style="color: var(--primary);">01 • LECTIO (00:00 – 05:00)</span>
+          <span>Scripture</span>
+        </div>
+        <div class="note-card-text">
+          Read the day's sacred passage slowly three times. Listen attentively for a single word or phrase that resonates deeply in your spirit.
+        </div>
+      </div>
+
+      <div class="note-card" style="margin-bottom: 12px;">
+        <div class="note-card-header">
+          <span style="color: var(--primary);">02 • MEDITATIO (05:00 – 15:00)</span>
+          <span>Silent Contemplation</span>
+        </div>
+        <div class="note-card-text">
+          Close your eyes in holy silence. Ponder the scripture and the day's Meditatio prompt. Converse quietly with Jesus heart-to-heart.
+        </div>
+      </div>
+
+      <div class="note-card" style="margin-bottom: 16px;">
+        <div class="note-card-header">
+          <span style="color: var(--primary);">03 • ORATIO & CONTEMPLATIO (15:00 – 20:00)</span>
+          <span>Thanksgiving & Fruit</span>
+        </div>
+        <div class="note-card-text">
+          Offer praises, intercede for family, and jot down the spiritual insights or peace received in the Grace Note field.
+        </div>
+      </div>
+
+      <div style="text-align: center; font-size: 11px; color: var(--muted); margin-top: 24px;">
+        © 2026 Mater Dei Creative • Personal Devotional Companion
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM PERSISTENT NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-today" onclick="switchView('today')">
+      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+      <span>Prayer</span>
+    </button>
+    <button class="nav-btn" id="nav-tracker" onclick="switchView('tracker')">
+      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>30 Days</span>
+    </button>
+    <button class="nav-btn" id="nav-notes" onclick="switchView('notes')">
+      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      <span>Journal</span>
+    </button>
+    <button class="nav-btn" id="nav-guide" onclick="switchView('guide')">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+      <span>Guide</span>
+    </button>
+  </nav>
+
+  <!-- NOTIFICATION TOAST -->
+  <div class="toast" id="toastMessage">Reflection Saved</div>
+
+  <!-- JAVASCRIPT LOGIC & PWA WORKER -->
+  <script>
+    // SHA-256 Hash of your secret code (e.g. for "MATER-DEI-2026")
+    // If you want to change the code, generate a new hash at any free SHA-256 tool
+    const PASSCODE_HASH = "8a2f447f52554e2ebbf4b6fc522cfb47120a232f91e9fbf3b3a0bcf535b6c9b4"; // hash for MATER-DEI-2026
+
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message.trim().toUpperCase());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function verifyAccessCode() {
+      const input = document.getElementById("passcodeInput").value;
+      const hashedInput = await sha256(input);
+
+      if (hashedInput === PASSCODE_HASH) {
+        localStorage.setItem("mater_dei_unlocked", "true");
+        document.getElementById("accessGate").style.display = "none";
+        showToast("Sanctuary Unlocked • Welcome!");
+      } else {
+        const err = document.getElementById("gateError");
+        err.style.display = "block";
+        document.getElementById("passcodeInput").style.borderColor = "#B22222";
+      }
+    }
+
+    function checkAccessOnLoad() {
+      const isUnlocked = localStorage.getItem("mater_dei_unlocked");
+      if (isUnlocked === "true") {
+        document.getElementById("accessGate").style.display = "none";
+      } else {
+        document.getElementById("accessGate").style.display = "flex";
+      }
+    }
+
+    // Call this inside window.addEventListener("DOMContentLoaded", ...)
+    checkAccessOnLoad();
+    // -------------------------------------------------------------
+    // 1. EMBEDDED 30-DAY DEVOTIONAL DATASET
+    // -------------------------------------------------------------
+    const DEVOTIONALS = [{"day": 1, "citation": "Proverbs 3:5-6", "scripture": "Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.", "reflection_prompt": "Where in your daily routine are you being invited to surrender control and let God direct your footsteps?"}, {"day": 2, "citation": "Isaiah 40:31", "scripture": "They that wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.", "reflection_prompt": "In what area of your life do you feel weary today, and how can resting in prayer renew your inner spirit?"}, {"day": 3, "citation": "Psalm 46:10", "scripture": "Be still, and know that I am God: I will be exalted among the heathen, I will be exalted in the earth.", "reflection_prompt": "When you silence external distractions, what quiet truth is God placing on your heart today?"}, {"day": 4, "citation": "Philippians 4:6-7", "scripture": "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God. And the peace of God shall keep your hearts.", "reflection_prompt": "Name one specific worry you can hand over to God right now in exchange for His surpassing peace."}, {"day": 5, "citation": "Matthew 11:28", "scripture": "Come unto me, all ye that labour and are heavy laden, and I will give you rest.", "reflection_prompt": "What heavy burden have you been carrying alone that Christ is gently asking to bear with you?"}, {"day": 6, "citation": "Joshua 1:9", "scripture": "Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the Lord thy God is with thee whithersoever thou goest.", "reflection_prompt": "Where do you need godly courage today to step forward in faith rather than shrinking back in fear?"}, {"day": 7, "citation": "Psalm 23:1-3", "scripture": "The Lord is my shepherd; I shall not want. He maketh me to lie down in green pastures: he leadeth me beside the still waters. He restoreth my soul.", "reflection_prompt": "How does recognizing the Lord as your personal Shepherd reshape your perspective on what you truly need?"}, {"day": 8, "citation": "Romans 8:28", "scripture": "And we know that all things work together for good to them that love God, to them who are the called according to his purpose.", "reflection_prompt": "Can you recall a past hardship where God eventually revealed His grace and purpose? How does that give you hope today?"}, {"day": 9, "citation": "Jeremiah 29:11", "scripture": "For I know the thoughts that I think toward you, saith the Lord, thoughts of peace, and not of evil, to give you an expected end.", "reflection_prompt": "How does trusting in God's peaceful and hopeful design for your future quiet today's anxieties?"}, {"day": 10, "citation": "2 Corinthians 12:9", "scripture": "My grace is sufficient for thee: for my strength is made perfect in weakness.", "reflection_prompt": "Instead of hiding your shortcomings, how can your weakness become an altar where God\u2019s strength shines brightest?"}, {"day": 11, "citation": "John 14:27", "scripture": "Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid.", "reflection_prompt": "How does Christ\u2019s enduring peace differ from the fleeting comforts and assurances the world offers?"}, {"day": 12, "citation": "Psalm 119:105", "scripture": "Thy word is a lamp unto my feet, and a light unto my path.", "reflection_prompt": "God rarely illuminates miles ahead, only the next step. What is the immediate next right step He is lighting for you?"}, {"day": 13, "citation": "Lamentations 3:22-23", "scripture": "It is of the Lord's mercies that we are not consumed, because his compassions fail not. They are new every morning: great is thy faithfulness.", "reflection_prompt": "What fresh mercy or clean slate from God do you need to gratefully receive this morning?"}, {"day": 14, "citation": "Colossians 3:15", "scripture": "And let the peace of God rule in your hearts, to the which also ye are called in one body; and be ye thankful.", "reflection_prompt": "What three blessings, large or small, can you thank God for with genuine, heartfelt gratitude right now?"}, {"day": 15, "citation": "1 Peter 5:7", "scripture": "Casting all your care upon him; for he careth for you.", "reflection_prompt": "Visualise gently setting all your cares into Christ\u2019s open hands. How does knowing He deeply cares for you bring solace?"}, {"day": 16, "citation": "Hebrews 4:16", "scripture": "Let us therefore come boldly unto the throne of grace, that we may obtain mercy, and find grace to help in time of need.", "reflection_prompt": "What bold prayer or quiet plea have you hesitated to bring before God\u2019s throne of grace?"}, {"day": 17, "citation": "Psalm 91:1-2", "scripture": "He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty. I will say of the Lord, He is my refuge and my fortress.", "reflection_prompt": "What does abiding in the 'secret place' of prayer look like in the midst of your daily schedule?"}, {"day": 18, "citation": "Romans 12:12", "scripture": "Rejoicing in hope; patient in tribulation; continuing instant in prayer.", "reflection_prompt": "Which of these three\u2014joyful hope, steady patience, or constant prayer\u2014is God asking you to nurture most today?"}, {"day": 19, "citation": "Psalm 34:8", "scripture": "O taste and see that the Lord is good: blessed is the man that trusteth in him.", "reflection_prompt": "In what quiet, ordinary moment this week have you tasted the real, tangible goodness of the Lord?"}, {"day": 20, "citation": "Galatians 5:22-23", "scripture": "But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance.", "reflection_prompt": "Which fruit of the Spirit would most transform your interactions with family and friends today?"}, {"day": 21, "citation": "Ephesians 3:20-21", "scripture": "Now unto him that is able to do exceeding abundantly above all that we ask or think, according to the power that worketh in us.", "reflection_prompt": "Are you limiting God in your prayers? What seemingly impossible situation can you entrust to His abundant power?"}, {"day": 22, "citation": "Psalm 103:2-4", "scripture": "Bless the Lord, O my soul, and forget not all his benefits: who forgiveth all thine iniquities; who healeth all thy diseases; who redeemeth thy life from destruction.", "reflection_prompt": "Take a moment to recount His past redemptions in your life. How does remembering keep your faith steadfast?"}, {"day": 23, "citation": "Micah 6:8", "scripture": "He hath shewed thee, O man, what is good; and what doth the Lord require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?", "reflection_prompt": "How can you practice justice, active mercy, and quiet humility in your primary responsibilities today?"}, {"day": 24, "citation": "John 15:5", "scripture": "I am the vine, ye are the branches: He that abideth in me, and I in him, the same bringeth forth much fruit: for without me ye can do nothing.", "reflection_prompt": "Are you striving in your own human strength, or resting and drawing spiritual nourishment directly from the Vine?"}, {"day": 25, "citation": "Psalm 27:1", "scripture": "The Lord is my light and my salvation; whom shall I fear? the Lord is the strength of my life; of whom shall I be afraid?", "reflection_prompt": "When feelings of insecurity or hesitation arise, how does anchoring your identity in God banish fear?"}, {"day": 26, "citation": "Romans 15:13", "scripture": "Now the God of hope fill you with all joy and peace in believing, that ye may abound in hope, through the power of the Holy Ghost.", "reflection_prompt": "Where can you be an instrument of joyful hope and encouragement to someone feeling disheartened today?"}, {"day": 27, "citation": "Psalm 19:14", "scripture": "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O Lord, my strength, and my redeemer.", "reflection_prompt": "Pause before speaking today: do your inner thoughts and spoken words bring life, edification, and honor to God?"}, {"day": 28, "citation": "1 Thessalonians 5:16-18", "scripture": "Rejoice evermore. Pray without ceasing. In every thing give thanks: for this is the will of God in Christ Jesus concerning you.", "reflection_prompt": "How can you turn small repetitive moments throughout your day into silent, continuous prayers of gratitude?"}, {"day": 29, "citation": "Psalm 121:1-2", "scripture": "I will lift up mine eyes unto the hills, from whence cometh my help. My help cometh from the Lord, which made heaven and earth.", "reflection_prompt": "When you look away from the world's turmoil and lift your eyes toward Heaven, where do you see God's providence at work?"}, {"day": 30, "citation": "Numbers 6:24-26", "scripture": "The Lord bless thee, and keep thee: The Lord make his face shine upon thee, and be gracious unto thee: The Lord lift up his countenance upon thee, and give thee peace.", "reflection_prompt": "As you complete this 30-day journey, speak this sacred blessing over your home, loved ones, and upcoming season."}];
+
+    // -------------------------------------------------------------
+    // 2. STATE MANAGEMENT & LOCAL STORAGE
+    // -------------------------------------------------------------
+    let currentSelectedDay = 1;
+    let timerTotalSeconds = 20 * 60; // 20 minutes
+    let timerRemaining = timerTotalSeconds;
+    let timerInterval = null;
+    let isTimerRunning = false;
+    let audioCtx = null;
+
+    // Load persisted user progress
+    function getStoredUserData() {
+      try {
+        const data = localStorage.getItem("mater_dei_prayer_app");
+        return data ? JSON.parse(data) : {
+          completedDays: {},
+          habits: {},
+          notes: {},
+          activeDay: 1,
+          lastDate: ""
+        };
+      } catch (e) {
+        return { completedDays: {}, habits: {}, notes: {}, activeDay: 1, lastDate: "" };
+      }
+    }
+
+    function saveUserData(data) {
+      try {
+        localStorage.setItem("mater_dei_prayer_app", JSON.stringify(data));
+      } catch (e) {
+        console.warn("Storage full or unavailable");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 3. UI RENDERING & DAY SELECTION
+    // -------------------------------------------------------------
+    function initApp() {
+      const userData = getStoredUserData();
+      currentSelectedDay = userData.activeDay || 1;
+      
+      loadDayContent(currentSelectedDay);
+      renderGrid();
+      updateStreak();
+      setupDateHeader();
+      registerServiceWorker();
+      setupManifest();
+    }
+
+    function setupDateHeader() {
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      document.getElementById("todayDateStr").innerText = new Date().toLocaleDateString(undefined, options);
+    }
+
+    function loadDayContent(dayNum) {
+      currentSelectedDay = dayNum;
+      const entry = DEVOTIONALS.find(d => d.day === dayNum) || DEVOTIONALS[0];
+      
+      // Update Card
+      document.getElementById("cardDayPill").innerText = `DAY ${String(dayNum).padStart(2, '0')} OF 30`;
+      document.getElementById("cardScripture").innerText = `“${entry.scripture}”`;
+      document.getElementById("cardCitation").innerText = entry.citation;
+      document.getElementById("cardPrompt").innerText = entry.reflection_prompt;
+
+      // Reset Card Flip state
+      document.getElementById("prayerCard").classList.remove("is-flipped");
+
+      // Load Habits & Notes for this day
+      const userData = getStoredUserData();
+      const dayHabits = (userData.habits && userData.habits[dayNum]) || { morn: false, prayer: false, eve: false };
+      
+      updateHabitUI("morn", dayHabits.morn);
+      updateHabitUI("prayer", dayHabits.prayer);
+      updateHabitUI("eve", dayHabits.eve);
+
+      const dayNote = (userData.notes && userData.notes[dayNum]) || "";
+      document.getElementById("graceNoteInput").value = dayNote;
+
+      // Update grid selection
+      renderGrid();
+    }
+
+    function flipCard() {
+      document.getElementById("prayerCard").classList.toggle("is-flipped");
+    }
+
+    // -------------------------------------------------------------
+    // 4. 20-MINUTE LITURGICAL TIMER & SOUND
+    // -------------------------------------------------------------
+    function toggleTimer() {
+      if (isTimerRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      isTimerRunning = true;
+      document.getElementById("startBtnText").innerText = "Pause Sanctuary";
+      document.getElementById("playIcon").innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+      
+      // Gentle chime on prayer start
+      playSacredChime(440, 2.5);
+
+      timerInterval = setInterval(() => {
+        if (timerRemaining > 0) {
+          timerRemaining--;
+          updateTimerUI();
+          checkPhaseTransitions();
+        } else {
+          completePrayerSession();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      isTimerRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById("startBtnText").innerText = "Resume Prayer";
+      document.getElementById("playIcon").innerHTML = '<path d="M8 5v14l11-7z"/>';
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerRemaining = timerTotalSeconds;
+      updateTimerUI();
+      document.getElementById("startBtnText").innerText = "Begin Prayer";
+      updatePhaseUI(1);
+    }
+
+    function updateTimerUI() {
+      const minutes = Math.floor(timerRemaining / 60);
+      const seconds = timerRemaining % 60;
+      document.getElementById("timeDisplay").innerText = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      // Update SVG circular ring (stroke-dashoffset from 0 to 565.48)
+      const circumference = 2 * Math.PI * 90; // ~565.48
+      const progressRatio = (timerTotalSeconds - timerRemaining) / timerTotalSeconds;
+      const offset = circumference * (1 - progressRatio);
+      document.getElementById("timerProgress").style.strokeDashoffset = offset;
+    }
+
+    function checkPhaseTransitions() {
+      const elapsed = timerTotalSeconds - timerRemaining;
+      
+      // Phase 1: 0 to 5 minutes (0 - 300s) -> Lectio
+      // Phase 2: 5 to 15 minutes (300 - 900s) -> Meditatio
+      // Phase 3: 15 to 20 minutes (900 - 1200s) -> Oratio
+      if (elapsed === 300) {
+        playSacredChime(528, 3.5); // 528 Hz transformation chime
+        showToast("Phase 2: Enter Silent Contemplation");
+        updatePhaseUI(2);
+      } else if (elapsed === 900) {
+        playSacredChime(660, 3.5);
+        showToast("Phase 3: Prayer, Praise & Journaling");
+        updatePhaseUI(3);
+      }
+    }
+
+    function updatePhaseUI(phaseNum) {
+      const pill = document.getElementById("phasePill");
+      const sub = document.getElementById("phaseSub");
+      
+      document.getElementById("step1").classList.remove("active");
+      document.getElementById("step2").classList.remove("active");
+      document.getElementById("step3").classList.remove("active");
+
+      if (phaseNum === 1) {
+        pill.innerText = "Phase 1: Lectio (Scripture)";
+        sub.innerText = "Read & Receive Word";
+        document.getElementById("step1").classList.add("active");
+        document.getElementById("timerProgress").style.stroke = "var(--accent)";
+      } else if (phaseNum === 2) {
+        pill.innerText = "Phase 2: Meditatio (Quiet)";
+        sub.innerText = "Silent Contemplation";
+        document.getElementById("step2").classList.add("active");
+        document.getElementById("timerProgress").style.stroke = "var(--primary)";
+      } else if (phaseNum === 3) {
+        pill.innerText = "Phase 3: Oratio (Thanks)";
+        sub.innerText = "Praise & Thanksgiving";
+        document.getElementById("step3").classList.add("active");
+        document.getElementById("timerProgress").style.stroke = "#2A7B5B";
+      }
+    }
+
+    function completePrayerSession() {
+      pauseTimer();
+      playSacredChime(440, 5.0); // Concluding prayer bell
+      showToast("Sanctuary Complete • May His Peace Be With You");
+      toggleHabit('prayer', true);
+    }
+
+    // Synthesized Tibetan singing bowl / cathedral bell chime via Web Audio API
+    function playSacredChime(freq = 440, duration = 3.0) {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        // Exponential decay creates realistic bell acoustics
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio unavailable");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 5. HABIT CHECKING & NOTE PERSISTENCE
+    // -------------------------------------------------------------
+    function toggleHabit(habitKey, forceTrue = false) {
+      const userData = getStoredUserData();
+      if (!userData.habits) userData.habits = {};
+      if (!userData.habits[currentSelectedDay]) {
+        userData.habits[currentSelectedDay] = { morn: false, prayer: false, eve: false };
+      }
+
+      if (forceTrue) {
+        userData.habits[currentSelectedDay][habitKey] = true;
+      } else {
+        userData.habits[currentSelectedDay][habitKey] = !userData.habits[currentSelectedDay][habitKey];
+      }
+
+      updateHabitUI(habitKey, userData.habits[currentSelectedDay][habitKey]);
+
+      // Check if day is completed (all 3 habits or prayer completed)
+      const isDayComplete = userData.habits[currentSelectedDay].prayer;
+      if (!userData.completedDays) userData.completedDays = {};
+      userData.completedDays[currentSelectedDay] = isDayComplete;
+
+      saveUserData(userData);
+      renderGrid();
+      updateStreak();
+    }
+
+    function updateHabitUI(habitKey, isChecked) {
+      const elMap = {
+        morn: document.getElementById("chkMorn"),
+        prayer: document.getElementById("chkPrayer"),
+        eve: document.getElementById("chkEve")
+      };
+      if (isChecked) {
+        elMap[habitKey].classList.add("checked");
+      } else {
+        elMap[habitKey].classList.remove("checked");
+      }
+    }
+
+    let saveTimeout = null;
+    function saveDailyNote() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        const text = document.getElementById("graceNoteInput").value;
+        const userData = getStoredUserData();
+        if (!userData.notes) userData.notes = {};
+        userData.notes[currentSelectedDay] = text;
+        saveUserData(userData);
+        showToast("Grace Note Saved");
+      }, 700);
+    }
+
+    function updateStreak() {
+      const userData = getStoredUserData();
+      let completedCount = 0;
+      if (userData.completedDays) {
+        completedCount = Object.values(userData.completedDays).filter(Boolean).length;
+      }
+      document.getElementById("streakCount").innerText = completedCount;
+    }
+
+    // -------------------------------------------------------------
+    // 6. 30-DAY GRID MATRIX
+    // -------------------------------------------------------------
+    function renderGrid() {
+      const grid = document.getElementById("daysGrid");
+      grid.innerHTML = "";
+      const userData = getStoredUserData();
+
+      for (let day = 1; day <= 30; day++) {
+        const cell = document.createElement("div");
+        cell.className = "day-cell";
+        
+        if (day === currentSelectedDay) cell.classList.add("current");
+        if (userData.completedDays && userData.completedDays[day]) cell.classList.add("completed");
+
+        cell.innerHTML = `
+          <div class="day-cell-num">${String(day).padStart(2, '0')}</div>
+          <div class="day-cell-status">${(userData.completedDays && userData.completedDays[day]) ? '✓' : '20m'}</div>
+        `;
+
+        cell.onclick = () => {
+          loadDayContent(day);
+          switchView("today");
+        };
+
+        grid.appendChild(cell);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 7. JOURNAL VIEW & EXPORT
+    // -------------------------------------------------------------
+    function renderJournalNotes() {
+      const list = document.getElementById("notesList");
+      list.innerHTML = "";
+      const userData = getStoredUserData();
+
+      let hasNotes = false;
+      for (let day = 1; day <= 30; day++) {
+        const note = userData.notes && userData.notes[day];
+        if (note && note.trim().length > 0) {
+          hasNotes = true;
+          const entry = DEVOTIONALS.find(d => d.day === day);
+          const card = document.createElement("div");
+          card.className = "note-card";
+          card.innerHTML = `
+            <div class="note-card-header">
+              <span>DAY ${String(day).padStart(2, '0')} • ${entry ? entry.citation : ''}</span>
+              <span style="color: var(--primary); cursor: pointer;" onclick="loadDayContent(${day}); switchView('today');">Open Day →</span>
+            </div>
+            <div class="note-card-text">${note}</div>
+          `;
+          list.appendChild(card);
+        }
+      }
+
+      if (!hasNotes) {
+        list.innerHTML = `
+          <div style="text-align: center; color: var(--muted); font-size: 13px; padding: 40px 10px;">
+            No prayer reflections recorded yet.<br>Complete your 20-minute daily meditation to begin your journal!
+          </div>
+        `;
+      }
+    }
+
+    function exportJournal() {
+      const userData = getStoredUserData();
+      let textContent = "MATER DEI CREATIVE - 30-DAY DEVOTIONAL JOURNAL\n\n";
+      for (let day = 1; day <= 30; day++) {
+        const note = userData.notes && userData.notes[day];
+        const entry = DEVOTIONALS.find(d => d.day === day);
+        if (note && note.trim().length > 0) {
+          textContent += `=== DAY ${day}: ${entry ? entry.citation : ''} ===\n`;
+          textContent += `Scripture: "${entry ? entry.scripture : ''}"\n`;
+          textContent += `Reflection: ${note}\n\n`;
+        }
+      }
+
+      const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Mater_Dei_30_Day_Prayer_Journal.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Journal Notes Exported");
+    }
+
+    // -------------------------------------------------------------
+    // 8. NAVIGATION & NOTIFICATIONS
+    // -------------------------------------------------------------
+    function switchView(viewName) {
+      document.querySelectorAll(".view-section").forEach(v => v.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+      document.getElementById(`view-${viewName}`).classList.add("active");
+      document.getElementById(`nav-${viewName}`).classList.add("active");
+
+      if (viewName === "notes") {
+        renderJournalNotes();
+      } else if (viewName === "tracker") {
+        renderGrid();
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastMessage");
+      toast.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    // -------------------------------------------------------------
+    // 9. PWA MANIFEST & SERVICE WORKER (OFFLINE SUPPORT)
+    // -------------------------------------------------------------
+    function setupManifest() {
+      const manifest = {
+        name: "Mater Dei • Daily Prayer",
+        short_name: "Mater Dei",
+        description: "20-Minute Daily Contemplative Prayer Sanctuary",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#FAF9F6",
+        theme_color: "#3C1361",
+        icons: [
+          {
+            src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%233C1361'/><circle cx='50' cy='50' r='38' fill='none' stroke='%23B78628' stroke-width='4'/><path d='M50 25v50M30 42h40' stroke='%23B78628' stroke-width='4' stroke-linecap='round'/></svg>",
+            sizes: "192x192 512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+      const stringManifest = JSON.stringify(manifest);
+      const blob = new Blob([stringManifest], {type: 'application/json'});
+      document.getElementById('manifest-link').setAttribute('href', URL.createObjectURL(blob));
+    }
+
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'mater-dei-cache-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+      }
+    }
+
+    // Bootstrap
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
