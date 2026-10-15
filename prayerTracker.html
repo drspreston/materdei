@@ -12,7 +12,12 @@
   
   <!-- Embedded PWA Manifest via Data URI -->
   <link rel="manifest" href="data:application/manifest+json;base64," id="manifest-link">
-  
+  <script>
+    // GATEKEEPER: If not unlocked, bounce back to index.html
+    if (localStorage.getItem("mater_dei_unlocked") !== "true") {
+      window.location.replace("index.html");
+    }
+  </script>
   <style>
     :root {
       --bg: #FAF9F6;
@@ -578,57 +583,6 @@
   </style>
 </head>
 <body>
-<!-- ACCESS CODE GATE OVERLAY -->
-<div id="accessGate" style="
-  position: fixed; inset: 0; background: var(--bg); z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 24px; text-align: center;
-">
-  <div style="
-    background: var(--card-bg); border: 1px solid var(--border-dark);
-    border-radius: 16px; padding: 32px 24px; max-width: 380px; width: 100%;
-    box-shadow: 0 8px 30px rgba(60, 19, 97, 0.08);
-  ">
-    <!-- Marian Monogram -->
-    <div style="
-      width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--accent);
-      margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
-      color: var(--accent); font-family: serif; font-size: 20px; font-weight: bold;
-    ">☩</div>
-
-    <h2 class="serif" style="color: var(--primary); font-size: 20px; margin-bottom: 6px;">
-      Devotional Access
-    </h2>
-    <p style="font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 20px;">
-      Please enter the personal Access Code provided on Page 1 of your <em>Mater Dei Welcome Guide</em>.
-    </p>
-
-    <input type="text" id="passcodeInput" placeholder="ENTER ACCESS CODE" style="
-      width: 100%; padding: 12px 14px; text-align: center; font-size: 14px;
-      letter-spacing: 2px; text-transform: uppercase; font-weight: bold;
-      border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 14px;
-      color: var(--primary); background: var(--bg); outline: none;
-    ">
-
-    <button onclick="verifyAccessCode()" style="
-      width: 100%; padding: 12px; background: var(--primary); color: #FFF;
-      border: none; border-radius: 8px; font-size: 13px; font-weight: bold;
-      letter-spacing: 1px; cursor: pointer;
-    ">
-      UNLOCK SANCTUARY →
-    </button>
-
-    <div id="gateError" style="
-      color: #B22222; font-size: 11px; margin-top: 12px; display: none;
-    ">
-      Invalid code. Please check your Welcome PDF guide.
-    </div>
-  </div>
-
-  <div style="font-size: 10px; color: var(--muted); margin-top: 24px;">
-    © 2026 Mater Dei Creative • Personal Devotional License
-  </div>
-</div>
 
   <!-- HEADER -->
   <header>
@@ -867,43 +821,6 @@
 
   <!-- JAVASCRIPT LOGIC & PWA WORKER -->
   <script>
-    // SHA-256 Hash of your secret code (e.g. for "MATER-DEI-2026")
-    // If you want to change the code, generate a new hash at any free SHA-256 tool
-    const PASSCODE_HASH = "8a2f447f52554e2ebbf4b6fc522cfb47120a232f91e9fbf3b3a0bcf535b6c9b4"; // hash for MATER-DEI-2026
-
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message.trim().toUpperCase());
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function verifyAccessCode() {
-      const input = document.getElementById("passcodeInput").value;
-      const hashedInput = await sha256(input);
-
-      if (hashedInput === PASSCODE_HASH) {
-        localStorage.setItem("mater_dei_unlocked", "true");
-        document.getElementById("accessGate").style.display = "none";
-        showToast("Sanctuary Unlocked • Welcome!");
-      } else {
-        const err = document.getElementById("gateError");
-        err.style.display = "block";
-        document.getElementById("passcodeInput").style.borderColor = "#B22222";
-      }
-    }
-
-    function checkAccessOnLoad() {
-      const isUnlocked = localStorage.getItem("mater_dei_unlocked");
-      if (isUnlocked === "true") {
-        document.getElementById("accessGate").style.display = "none";
-      } else {
-        document.getElementById("accessGate").style.display = "flex";
-      }
-    }
-
-    // Call this inside window.addEventListener("DOMContentLoaded", ...)
-    checkAccessOnLoad();
     // -------------------------------------------------------------
     // 1. EMBEDDED 30-DAY DEVOTIONAL DATASET
     // -------------------------------------------------------------
@@ -1320,7 +1237,7 @@
         name: "Mater Dei • Daily Prayer",
         short_name: "Mater Dei",
         description: "20-Minute Daily Contemplative Prayer Sanctuary",
-        start_url: ".",
+        start_url: "prayerTracker.html",
         display: "standalone",
         background_color: "#FAF9F6",
         theme_color: "#3C1361",
