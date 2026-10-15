@@ -108,7 +108,7 @@
   <script>
     // IF USER HAS ALREADY ENTERED CODE BEFORE, REDIRECT IMMEDIATELY
     if (localStorage.getItem("mater_dei_unlocked") === "true") {
-      window.location.replace("app.html");
+      window.location.replace("prayerTracker.html");
     }
   </script>
 </head>
@@ -142,7 +142,7 @@
         // Save authorization permanently on this device
         localStorage.setItem("mater_dei_unlocked", "true");
         // Forward to the app
-        window.location.replace("app.html");
+        window.location.replace("prayerTracker.html");
       } else {
         const err = document.getElementById("errorMsg");
         err.style.display = "block";
