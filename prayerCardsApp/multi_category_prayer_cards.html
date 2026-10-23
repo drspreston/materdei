@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <!-- Restores pinch-to-zoom on iOS & Android -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mater Dei • Daily Prayer Sanctuary</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,26 +24,31 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Georgia", serif;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: env(safe-area-inset-top, 14px) 16px env(safe-area-inset-bottom, 14px);
-      overflow: hidden;
+      justify-content: flex-start;
+      padding: env(safe-area-inset-top, 12px) 14px calc(env(safe-area-inset-bottom, 16px) + 24px);
+      /* Allows smooth vertical scroll on mobile so controls are reachable */
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     header {
       text-align: center;
       margin-top: 4px;
+      margin-bottom: 6px;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
+      flex-shrink: 0;
     }
     .emblem {
       font-size: 16px;
@@ -50,7 +56,7 @@
       margin-bottom: 2px;
     }
     header h1 {
-      font-size: 12px;
+      font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--primary);
@@ -63,8 +69,8 @@
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      margin-top: 10px;
-      padding-bottom: 2px;
+      margin-top: 8px;
+      padding-bottom: 4px;
     }
     .category-bar-wrapper::-webkit-scrollbar {
       display: none;
@@ -94,34 +100,34 @@
       border-color: var(--primary);
       box-shadow: 0 2px 8px rgba(27, 67, 50, 0.2);
     }
-    
-    /* CARD STAGE */
+
+    /* CARD STAGE: Dominates phone viewport */
     .stage {
-      flex: 1;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      padding: 12px 0;
+      margin: 6px 0 16px;
+      flex-shrink: 0;
     }
-    
-    /* Make the wrapper hug the image tightly without a fixed box */
+
+    /* Hugs the card silhouette directly without an awkward white border */
     .card-wrapper {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       max-width: 100%;
-      max-height: 70vh;
+      max-height: 78vh;
+      max-height: 78dvh;
       border-radius: 18px;
-      /* Shadow and border now wrap the exact silhouette */
-      box-shadow: 0 10px 30px rgba(27, 67, 50, 0.12);
+      box-shadow: 0 10px 28px rgba(27, 67, 50, 0.12);
       border: 1px solid var(--border);
-      background: transparent;
+      background: var(--card-bg);
       overflow: hidden;
-      touch-action: pan-y;
-      transition: transform 0.2s ease;
+      touch-action: pan-y pinch-zoom;
+      transition: transform 0.2s ease, background-color 0.2s ease;
     }
 
     .card-wrapper img {
@@ -129,79 +135,102 @@
       width: auto;
       height: auto;
       max-width: 100%;
-      max-height: 70vh; /* Scales proportionally to screen height */
+      max-height: 78vh;
+      max-height: 78dvh;
       object-fit: contain;
       border-radius: 18px;
-      pointer-events: none;
+      touch-action: pinch-zoom;
       transition: opacity 0.15s ease;
     }
 
-    /* FOOTER CONTROLS */
+    /* FOOTER CONTROLS: Scrollable into view on mobile, cleanly pinned below on desktop */
     footer {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 8px;
+      padding: 14px 10px;
       border-top: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+      margin-top: auto;
     }
+
     .btn-nav {
       background: #FFFFFF;
       border: 1px solid var(--border);
       color: var(--primary);
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       transition: transform 0.1s ease, background 0.15s;
     }
     .btn-nav:active {
-      transform: scale(0.94);
+      transform: scale(0.92);
     }
     .btn-nav:disabled {
       opacity: 0.25;
       cursor: default;
       transform: none;
+      box-shadow: none;
     }
+
     .deck-counter {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       letter-spacing: 1.5px;
       color: var(--muted);
       text-transform: uppercase;
     }
+
     .options-row {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       justify-content: center;
-      margin-top: 4px;
+      margin-top: 6px;
     }
+
     .btn-small {
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
       cursor: pointer;
       letter-spacing: 0.5px;
       text-decoration: underline;
+      padding: 4px;
     }
     .btn-small:hover {
       color: var(--primary);
     }
-    
+
+    /* DESKTOP ENHANCEMENTS */
+    @media (min-width: 900px) {
+      body {
+        padding: 24px 32px;
+      }
+      header, .stage, footer {
+        max-width: 620px;
+      }
+      .card-wrapper, .card-wrapper img {
+        max-height: 72vh;
+      }
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="emblem">☩</div>
-    <h1>Mater Dei • Devotional Prayer Cards</h1>
+    <h1>Mater Dei • Devotional Sanctuary</h1>
     
     <!-- Dynamic Category Tabs -->
     <div class="category-bar-wrapper">
@@ -218,7 +247,7 @@
   <footer>
     <button class="btn-nav" id="prevBtn" onclick="prevCard()" aria-label="Previous Card">&#8592;</button>
     <div style="text-align: center;">
-      <div class="deck-counter" id="counterText">CARD 1 OF 10</div>
+      <div class="deck-counter" id="counterText">CARD 1</div>
       <div class="options-row">
         <button class="btn-small" onclick="shuffleDeck()">Shuffle</button>
         <span style="color: var(--border);">•</span>
@@ -247,12 +276,35 @@
     let currentIndex = 0;
 
     const imgElem = document.getElementById("activeCardImage");
+    const wrapperElem = document.getElementById("cardWrapper");
     const counterElem = document.getElementById("counterText");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const tabsContainer = document.getElementById("categoryTabs");
 
-    // Initialize category bar tabs
+    // Dynamic background color matching for borderless/parchment cards
+    function matchCardBackgroundColor(imageSrc) {
+      const tempImg = new Image();
+      tempImg.crossOrigin = "Anonymous";
+      tempImg.onload = function() {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = 1;
+          canvas.height = 1;
+          const ctx = canvas.getContext("2d");
+          const sampleX = Math.min(15, tempImg.naturalWidth - 1);
+          const sampleY = Math.min(15, tempImg.naturalHeight - 1);
+          ctx.drawImage(tempImg, sampleX, sampleY, 1, 1, 0, 0, 1, 1);
+          const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+          wrapperElem.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        } catch (e) {
+          wrapperElem.style.backgroundColor = "transparent";
+        }
+      };
+      tempImg.src = imageSrc;
+    }
+
+    // Category Tabs Rendering
     function renderCategoryTabs() {
       tabsContainer.innerHTML = "";
       categories.forEach(cat => {
@@ -286,11 +338,16 @@
 
       imgElem.style.display = "block";
       imgElem.style.opacity = "0.35";
-      setTimeout(() => {
-        imgElem.src = activeDeck[currentIndex];
-        imgElem.style.opacity = "1";
-      }, 100);
+      const src = activeDeck[currentIndex];
 
+      matchCardBackgroundColor(src);
+
+      setTimeout(() => {
+        imgElem.src = src;
+        imgElem.style.opacity = "1";
+      }, 80);
+
+      // Dynamically handles 10, 15, 20+ cards seamlessly
       counterElem.innerText = `CARD ${currentIndex + 1} OF ${activeDeck.length}`;
       prevBtn.disabled = (currentIndex === 0);
       nextBtn.disabled = (currentIndex === activeDeck.length - 1);
@@ -325,18 +382,31 @@
       renderCurrentCard();
     }
 
-    // Touch Swipe Gestures
+    // Single-Finger Touch Swipes (Allows Pinch-to-Zoom without interference)
     let touchStartX = 0;
-    const stage = document.getElementById("cardWrapper");
-    stage.addEventListener("touchstart", (e) => touchStartX = e.changedTouches[0].screenX, { passive: true });
-    stage.addEventListener("touchend", (e) => {
-      const touchEndX = e.changedTouches[0].screenX;
-      const diff = touchStartX - touchEndX;
-      if (diff > 45) nextCard();
-      else if (diff < -45) prevCard();
+    let touchStartY = 0;
+
+    wrapperElem.addEventListener("touchstart", (e) => {
+      if (e.touches.length > 1) return; // Do not intercept pinches
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
     }, { passive: true });
 
-    // Desktop Keyboard Arrows
+    wrapperElem.addEventListener("touchend", (e) => {
+      if (e.touches.length > 0) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+
+      // Only navigate if horizontal swipe was intentional and larger than vertical scrolling
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+        if (diffX > 0) nextCard();
+        else prevCard();
+      }
+    }, { passive: true });
+
+    // Desktop Keyboard Arrow Navigation
     window.addEventListener("keydown", (e) => {
       if (e.key === "ArrowRight") nextCard();
       if (e.key === "ArrowLeft") prevCard();
