@@ -35,7 +35,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: env(safe-area-inset-top, 12px) 14px calc(env(safe-area-inset-bottom, 16px) + 24px);
+      /* INCREASED BOTTOM PADDING:
+         env(safe-area-inset-bottom) handles the home swipe bar on iPhone/Android,
+         and + 70px ensures you can comfortably scroll well past the address bar. */
+      padding: env(safe-area-inset-top, 12px) 14px calc(env(safe-area-inset-bottom, 20px) + 70px);
       /* Allows smooth vertical scroll on mobile so controls are reachable */
       overflow-x: hidden;
       overflow-y: auto;
@@ -150,11 +153,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 10px;
+      /* Add generous bottom padding directly inside the footer */
+      padding: 16px 12px calc(env(safe-area-inset-bottom, 16px) + 28px);
       border-top: 1px solid var(--border);
       background: var(--bg);
       flex-shrink: 0;
       margin-top: auto;
+      margin-bottom: 24px; /* Extra push to prevent address bar collision */
     }
 
     .btn-nav {
@@ -196,17 +201,18 @@
       gap: 14px;
       justify-content: center;
       margin-top: 6px;
+      padding-bottom: 4px; /* Keeps the text links lifted */
     }
 
     .btn-small {
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       letter-spacing: 0.5px;
       text-decoration: underline;
-      padding: 4px;
+      padding: 6px 4px;
     }
     .btn-small:hover {
       color: var(--primary);
