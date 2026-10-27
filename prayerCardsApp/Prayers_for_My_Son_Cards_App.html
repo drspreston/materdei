@@ -33,7 +33,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: env(safe-area-inset-top, 12px) 14px calc(env(safe-area-inset-bottom, 16px) + 24px);
+      /* INCREASED BOTTOM PADDING:
+         env(safe-area-inset-bottom) handles the home swipe bar on iPhone/Android,
+         and + 70px ensures you can comfortably scroll well past the address bar. */
+      padding: env(safe-area-inset-top, 12px) 14px calc(env(safe-area-inset-bottom, 20px) + 70px);
       /* ALLOW vertical scrolling so controls are accessible on small screens */
       overflow-x: hidden;
       overflow-y: auto;
@@ -66,7 +69,8 @@
       margin-top: 2px;
       font-style: italic;
     }
-    /* CARD STAGE */
+    
+    /* CARD STAGE: Dominates phone viewport */
     .stage {
       width: 100%;
       max-width: 480px;
@@ -74,50 +78,58 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      margin: 4px 0 16px;
+      margin: 6px 0 16px;
       flex-shrink: 0;
     }
-    /* Make the wrapper hug the image tightly without a fixed box */
+
+    /* Hugs the card silhouette directly without an awkward white border */
     .card-wrapper {
-      width: 100%;
-      /* On mobile, let the card take up to 78% of viewport height */
-      max-height: 78vh;
-      max-height: 78dvh;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: var(--card-bg, #FFFFFF);
+      max-width: 100%;
+      max-height: 78vh;
+      max-height: 78dvh;
       border-radius: 18px;
       box-shadow: 0 10px 28px rgba(27, 67, 50, 0.12);
       border: 1px solid var(--border);
+      background: var(--card-bg);
       overflow: hidden;
-      touch-action: pan-y pinch-zoom; /* Permits both vertical scrolling and pinch-zooming */
-      transition: transform 0.2s ease;
+      touch-action: pan-y pinch-zoom;
+      transition: transform 0.2s ease, background-color 0.2s ease;
     }
 
     .card-wrapper img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 78vh;
+      max-height: 78dvh;
+      object-fit: contain;
+      border-radius: 18px;
+      touch-action: pinch-zoom;
+      transition: opacity 0.15s ease;
+    }
+
+    /* CONTROLS */
+    footer {
       width: 100%;
       max-width: 480px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 10px;
+      /* Add generous bottom padding directly inside the footer */
+      padding: 16px 12px calc(env(safe-area-inset-bottom, 16px) + 28px);
       border-top: 1px solid var(--border);
       background: var(--bg);
       flex-shrink: 0;
       margin-top: auto;
+      margin-bottom: 24px; /* Extra push to prevent address bar collision */
     }
-    /* CONTROLS */
-    footer {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 10px;
-      border-top: 1px solid var(--border);
-    }
-    background: #FFFFFF;
+
+    .btn-nav {
+      background: #FFFFFF;
       border: 1px solid var(--border);
       color: var(--primary);
       width: 48px;
@@ -154,17 +166,18 @@
       gap: 14px;
       justify-content: center;
       margin-top: 6px;
+      padding-bottom: 4px;
     }
 
     .btn-small {
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       letter-spacing: 0.5px;
       text-decoration: underline;
-      padding: 4px;
+      padding: 6px 4px;
     }
     .btn-small:hover {
       color: var(--primary);
